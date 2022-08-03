@@ -1,0 +1,43 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:10.3
+    restart: always
+    environment:
+      - POSTGRES_USER=postgree
+      - POSTGRES_PASSWORD=postgree
+      - POSTGRES_DB=msemail
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+  rabbitmq:
+    image: docker.io/bitnami/rabbitmq:3.10
+    ports:
+      - '4369:4369'
+      - '5551:5551'
+      - '5552:5552'
+      - '5672:5672'
+      - '25672:25672'
+      - '15672:15672' #admin user:user: pass: bitnami  http://127.0.0.1:15672/
+    environment:
+      - RABBITMQ_SECURE_PASSWORD=yes
+      - RABBITMQ_LOGS=-
+    volumes:
+      - 'rabbitmq_data:/bitnami/rabbitmq/mnesia'
+  # api:
+  #   build: .
+  #   environment:
+  #     - DB_SERVER=postgres
+  #     - POSTGRES_DB=msemail
+  #     - POSTGRES_USER=postgree
+  #     - POSTGRES_PASSWORD=postgree
+  #   ports:
+  #     - 8080:8080
+  #   links:
+  #     - postgres
+  #     - rabbitmq
+volumes:
+  postgres:
+  rabbitmq_data:
+    driver: local
